@@ -3,7 +3,9 @@
 		<title>Gestion des langues</title>
 		<script src="angular.min.js"></script>
 		<script>
+				
 		function LanguageCtrl($scope,$http) {
+			$scope.codeError ='';
 			$http.get('/languages/list').success(function(data){
 				$scope.languages = data;
 			});
@@ -14,12 +16,18 @@
 					name: language.name
 				};
 				$http.post('/languages',d).success(function(data,status){
-					$scope.languages.push({"key":language.code, "name":language.name});
-					language.code='';
-					language.name='';
+					$scope.message = data.messages[0]
+					if(data.status=="ok"){
+						$scope.codeError ='';
+						$scope.languages.push({"key":language.code, "name":language.name});
+						language.code='';
+						language.name='';
+					} else {
+						$scope.codeError ='error';
+					}
 				});
 			};
-		}
+		};
 		</script>
 		<link rel="stylesheet" href="people.css">
 	</head>
@@ -35,7 +43,8 @@
 		
 		<form>
 			<h2>Ajouter une langue</h2>
-			Code: <input type="text" ng-model="language.code"/><br/>
+			<span id="message">{{message}}</span><br />
+			Code: <input type="text" ng-model="language.code" class="{{codeError}}"/><br/>
 			Langue: <input type="text" ng-model="language.name"/><br />
 			<button ng-click="add(language)">Ajouter</button>
 		</form>

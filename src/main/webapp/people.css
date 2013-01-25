@@ -18,3 +18,7 @@ table.people tr.even{
 table.people tr.odd{
 	background-color:#9CF5EE;
 }
+
+.error {
+	border-color:red;
+}

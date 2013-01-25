@@ -7,8 +7,5 @@ class MainController extends ScalatraFilter {
 	get("/"){
 		"Hello world"
 	}
-	
-	get("/json"){
-	  "json"
-	}
+
 }
