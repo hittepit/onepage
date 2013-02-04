@@ -16,14 +16,19 @@
 					name: language.name
 				};
 				$http.post('/languages',d).success(function(data,status){
-					$scope.message = data.messages[0]
+					$scope.message = data.messages
 					if(data.status=="ok"){
 						$scope.codeError ='';
 						$scope.languages.push({"key":language.code, "name":language.name});
 						language.code='';
 						language.name='';
 					} else {
-						$scope.codeError ='error';
+						if(data.errors.codeError){
+							$scope.codeError ='error';
+						}
+						if(data.errors.nameError){
+							$scope.nameError = 'error';
+						}
 					}
 				});
 			};
@@ -41,12 +46,16 @@
 			</tr>
 		</table>
 		
-		<form>
+		<form name="la" novalidate>
 			<h2>Ajouter une langue</h2>
-			<span id="message">{{message}}</span><br />
-			Code: <input type="text" ng-model="language.code" class="{{codeError}}"/><br/>
-			Langue: <input type="text" ng-model="language.name"/><br />
-			<button ng-click="add(language)">Ajouter</button>
+			<span id="message">
+			<ul ng-repeat="m in message">
+				<li>{{m}}</li>
+			</ul>
+			</span><br />
+			Code: <input type="text" ng-model="language.code" class="{{codeError}}" required/><br/>
+			Langue: <input type="text" ng-model="language.name" class="{{nameError}}" required/><br />
+			<button ng-click="add(language)" ng-disabled="la.$invalid">Ajouter</button>
 		</form>
 	</body>
 <html>

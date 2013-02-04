@@ -2,12 +2,12 @@ package be.fabrice.onepage.business
 
 import be.fabrice.onepage.business.bo.Language
 
-case class LangueCodeErreur(message:String)
+case class LangueCodeErreur(message:String,key:String)
 
 object LangueCodeErreur {
-  val KEY_EXISTS = LangueCodeErreur("Le code existe déjà")
-  val EMPTY_KEY = LangueCodeErreur("Le code est vide")
-  val EMPTY_NAME = LangueCodeErreur("Le nom de la langue est vide")
+  val KEY_EXISTS = LangueCodeErreur("Le code existe déjà","codeError")
+  val EMPTY_KEY = LangueCodeErreur("Le code est vide","codeError")
+  val EMPTY_NAME = LangueCodeErreur("Le nom de la langue est vide","nameError")
 }
 
 object LanguageService {
@@ -15,15 +15,21 @@ object LanguageService {
 	
 	def findAll = languages.values
 	
-	def add(l:Language):Option[LangueCodeErreur]= {
-	  if(l.name.isEmpty()){
-	    Some(LangueCodeErreur.EMPTY_KEY)
+	def add(l:Language):List[LangueCodeErreur]= {
+	  var errors = List[LangueCodeErreur]()
+	  if(l.key.isEmpty()){
+	    errors::=LangueCodeErreur.EMPTY_KEY
 	  }
+	  if(l.name.isEmpty){
+	    errors::=LangueCodeErreur.EMPTY_NAME
+	  } 
+	  
 	  if(languages.keys.exists(_ == l.key)){
-	    Some(LangueCodeErreur.KEY_EXISTS)
-	  } else {
+	    errors::=LangueCodeErreur.KEY_EXISTS
+	  } else if(errors.isEmpty){
 	    languages+=(l.key -> l)
-	    None
 	  }
+	  
+	  errors
 	}
 }
