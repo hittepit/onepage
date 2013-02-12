@@ -5,13 +5,13 @@ import org.scalatra.scalate.ScalateSupport
 import org.scalatra.json.JacksonJsonSupport
 import org.json4s.Formats
 import org.json4s.DefaultFormats
-import be.fabrice.onepage.business.bo.Language
 import be.fabrice.onepage.business.LanguageService
-import be.fabrice.onepage.business.LangueCodeErreur
 import org.slf4j.LoggerFactory
+import be.fabrice.onepage.controllers.dto.LanguageDto
+import be.fabrice.onepage.controllers.dto.LanguageValidator
 
 
-case class Retour(val status:String,val messages:List[String],val errors:Map[String,Boolean])
+case class Retour(val status:String,val errors:Map[String,String])
 
 class LanguageController extends ScalatraFilter with ScalateSupport with JacksonJsonSupport{
   protected implicit val jsonFormats: Formats = DefaultFormats
@@ -28,19 +28,21 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
 	}
 	
 	post("/languages"){
-	  val l = parsedBody.extract[Language]
-	  LanguageService.add(l) match {
-	    case Nil => logger.info("Input correct")
-	      			Retour("ok",List("ok"),Map())
-	    case l:List[LangueCodeErreur] => {
-	      def addCodes(l:List[LangueCodeErreur],r:Retour):Retour = l match {
-	        case x::xs => addCodes(xs,Retour("ko",x.message::r.messages,r.errors+ (x.key->true)))
-	        case Nil => r
-	      }
-	      
+	  val l = parsedBody.extract[LanguageDto]
+	  var errors = LanguageValidator.validate(l,Map())
+	  if(errors.isEmpty){
+	    try{
+		  LanguageService.add(l.transform)
+	    }catch{
+	      case _ => errors = Map("language.key"->"La clé existe déjà")
+	    }
+	  }
+	  
+	  if(errors.isEmpty){
+	    Retour("ok",Map())
+	  } else {
 	      logger.error("Il y a des erreurs")
-	      addCodes(l,Retour("ko",Nil,Map()))
-	    } 
+	      Retour("ko",errors)
 	  }
 	}
 	
