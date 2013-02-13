@@ -5,16 +5,19 @@ import org.scalatra.scalate.ScalateSupport
 import org.scalatra.json.JacksonJsonSupport
 import org.json4s.Formats
 import org.json4s.DefaultFormats
-import be.fabrice.onepage.business.LanguageService
 import org.slf4j.LoggerFactory
 import be.fabrice.onepage.controllers.dto.LanguageDto
 import be.fabrice.onepage.controllers.dto.LanguageValidator
+import be.fabrice.onepage.application.ComponentRegistry
+import be.fabrice.onepage.business.LanguageException
 
 
 case class Retour(val status:String,val errors:Map[String,String])
 
 class LanguageController extends ScalatraFilter with ScalateSupport with JacksonJsonSupport{
   protected implicit val jsonFormats: Formats = DefaultFormats
+  
+  val languageService = ComponentRegistry.languageService
   
   val logger = LoggerFactory.getLogger(classOf[LanguageController])
   
@@ -32,9 +35,9 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
 	  var errors = LanguageValidator.validate(l,Map())
 	  if(errors.isEmpty){
 	    try{
-		  LanguageService.add(l.transform)
+		  languageService.add(l.transform)
 	    }catch{
-	      case _ => errors = Map("language.key"->"La clé existe déjà")
+	      case e:LanguageException => errors = Map("language.key"->"La clé existe déjà")
 	    }
 	  }
 	  
@@ -47,6 +50,6 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
 	}
 	
 	get("/languages/list"){
-	    LanguageService.findAll
+	    languageService.findAll
 	}
 }

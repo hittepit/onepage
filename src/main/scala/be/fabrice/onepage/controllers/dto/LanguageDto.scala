@@ -1,6 +1,5 @@
 package be.fabrice.onepage.controllers.dto
 
-import be.fabrice.onepage.business.LanguageService
 import be.fabrice.onepage.business.bo.Language
 
 case class LanguageDto(val key:String,val name:String) {

@@ -1,6 +1,7 @@
 package be.fabrice.onepage.business
 
 import be.fabrice.onepage.business.bo.Language
+import be.fabrice.onepage.dao.LanguageDaoComponent
 
 case class LangueErrorCode(message:String)
 
@@ -10,18 +11,20 @@ object LangueErrorCode {
 
 class LanguageException(val code:LangueErrorCode) extends Exception(code.message)
 
-object LanguageService {
-	var languages = Map("Fr"->Language("Fr","Français"),"Eng"->Language("Eng","English"))
-	
-	def findAll = languages.values
-	
-	def find(key:String):Option[Language] = languages.get(key)
-	
-	def add(l:Language)= {
-	  if(languages.keys.exists(_ == l.key)){
-	    throw new LanguageException(LangueErrorCode.KEY_EXISTS)
-	  } else{
-	    languages+=(l.key -> l)
-	  }
+trait LanguageServiceComponent {
+  this:LanguageDaoComponent =>
+    
+  val languageService:LanguageService
+  
+  class LanguageService{
+    def findAll = languageDao.findAll
+    
+   	def add(l:Language)= {
+   	  languageDao.find(l.key) match {
+   	    case None => languageDao.save(l)
+   	    case Some(_) => throw new LanguageException(LangueErrorCode.KEY_EXISTS)
+   	  }
 	}
+
+  }
 }
