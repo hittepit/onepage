@@ -1,6 +1,5 @@
 package be.fabrice.onepage.dao
 
-import be.fabrice.onepage.business.LanguageException
 import be.fabrice.onepage.business.bo.Language
 
 trait LanguageDaoComponent {
