@@ -6,21 +6,19 @@ scalaVersion := "2.9.2"
 
 seq(webSettings :_*)
 
-libraryDependencies += "org.scalatra" % "scalatra" % "2.1.0"
+libraryDependencies += "org.scalatra" % "scalatra" % "2.2.0" exclude("com.typesafe.akka", "akka-actor")
 
-libraryDependencies += "org.scalatra" % "scalatra-json" % "2.2.0-RC3"
+libraryDependencies += "org.scalatra" % "scalatra-scalate" % "2.2.0"
+
+libraryDependencies += "org.scalatra" % "scalatra-fileupload" % "2.2.0"
+
+libraryDependencies += "org.scalatra" % "scalatra-jerkson" % "2.1.1"
+
+libraryDependencies += "org.scalatra" % "scalatra-json" % "2.2.0"
 
 libraryDependencies += "org.json4s"   %% "json4s-jackson" % "3.0.0"
 
-libraryDependencies += "org.scalatra" % "scalatra-scalate" % "2.1.0"
-
-libraryDependencies += "org.scalatra" % "scalatra-fileupload" % "2.1.0"
-
-libraryDependencies += "com.codahale" % "jerkson_2.9.1" % "0.5.0"
-
 libraryDependencies += "org.eclipse.jetty" % "jetty-webapp" % "8.1.5.v20120716" % "container"
-
-//libraryDependencies += "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
 
 libraryDependencies += "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
 

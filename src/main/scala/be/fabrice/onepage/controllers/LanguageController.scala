@@ -37,7 +37,7 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
 	    try{
 		  languageService.add(l.transform)
 	    }catch{
-	      case e:LanguageException => errors = Map("language.key"->"La clé existe déjà")
+	      case e:LanguageException => errors = Map("language.key"->e.code.message)
 	    }
 	  }
 	  
