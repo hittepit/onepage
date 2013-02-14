@@ -28,6 +28,8 @@ libraryDependencies += "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.8" % "test"
 
+libraryDependencies += "org.scalatra" %% "scalatra-scalatest" % "2.2.0" % "test"
+
 libraryDependencies += "junit" % "junit" % "4.10" % "test"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.9.5" % "test"

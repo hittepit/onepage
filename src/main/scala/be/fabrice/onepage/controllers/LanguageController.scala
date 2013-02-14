@@ -1,23 +1,23 @@
 package be.fabrice.onepage.controllers
 
-import org.scalatra.ScalatraFilter
-import org.scalatra.scalate.ScalateSupport
-import org.scalatra.json.JacksonJsonSupport
-import org.json4s.Formats
 import org.json4s.DefaultFormats
+import org.json4s.Formats
+import org.json4s.jvalue2extractable
+import org.scalatra.ScalatraServlet
+import org.scalatra.json.JacksonJsonSupport
+import org.scalatra.scalate.ScalateSupport
 import org.slf4j.LoggerFactory
-import be.fabrice.onepage.controllers.dto.LanguageDto
-import be.fabrice.onepage.controllers.dto.LanguageValidator
+
 import be.fabrice.onepage.application.ComponentRegistry
 import be.fabrice.onepage.business.LanguageException
+import be.fabrice.onepage.controllers.dto.LanguageDto
+import be.fabrice.onepage.controllers.dto.LanguageValidator
 
 
 case class Retour(val status:String,val errors:Map[String,String])
 
-class LanguageController extends ScalatraFilter with ScalateSupport with JacksonJsonSupport{
+class LanguageController extends ScalatraServlet with ScalateSupport with JacksonJsonSupport with ComponentRegistry{
   protected implicit val jsonFormats: Formats = DefaultFormats
-  
-  val languageService = ComponentRegistry.languageService
   
   val logger = LoggerFactory.getLogger(classOf[LanguageController])
   
@@ -25,12 +25,12 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
     contentType = formats("json")
   }
   
-	get("/languages"){
+	get("/"){
 		contentType="text/html"
 		ssp("/languages")  
 	}
 	
-	post("/languages"){
+	post("/"){
 	  val l = parsedBody.extract[LanguageDto]
 	  var errors = LanguageValidator.validate(l,Map())
 	  if(errors.isEmpty){
@@ -49,7 +49,7 @@ class LanguageController extends ScalatraFilter with ScalateSupport with Jackson
 	  }
 	}
 	
-	get("/languages/list"){
+	get("/list"){
 	    languageService.findAll
 	}
 }
