@@ -9,7 +9,12 @@ object LangueErrorCode {
   val KEY_EXISTS = LangueErrorCode("Le code existe déjà")
 }
 
-class LanguageException(val code:LangueErrorCode) extends Exception(code.message)
+case class CodeRetour(val code:String, val errors:List[LangueErrorCode])
+
+object CodeRetour {
+  def OK = new CodeRetour("ok",List())
+  def KO(errors:List[LangueErrorCode]) = new CodeRetour("ko",errors)
+}
 
 trait LanguageServiceComponent {
   this:LanguageDaoComponent =>
@@ -22,7 +27,8 @@ trait LanguageServiceComponent {
    	def add(l:Language)= {
    	  languageDao.find(l.key) match {
    	    case None => languageDao.save(l)
-   	    case Some(_) => throw new LanguageException(LangueErrorCode.KEY_EXISTS)
+   	    			CodeRetour.OK
+   	    case Some(_) => CodeRetour.KO(List(LangueErrorCode.KEY_EXISTS))
    	  }
 	}
 

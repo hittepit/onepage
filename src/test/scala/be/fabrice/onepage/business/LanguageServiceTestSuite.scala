@@ -35,10 +35,8 @@ class LanguageServiceTestSuite extends FunSuite with BeforeAndAfter with MustMat
 	}
 	
 	test("add should throw an exception if code already exists in DB"){
-	  val thrown = intercept[LanguageException]{
-	    languageService.add(Language("existing","whatever"))
-	  }
+	  val s=  languageService.add(Language("existing","whatever"))
 	  
-	  thrown.code must equal (LangueErrorCode.KEY_EXISTS)
+	  s.code must equal ("ko")
 	}
 }

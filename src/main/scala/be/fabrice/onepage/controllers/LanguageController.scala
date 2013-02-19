@@ -8,10 +8,10 @@ import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.scalate.ScalateSupport
 import org.slf4j.LoggerFactory
 import be.fabrice.onepage.application.ComponentRegistry
-import be.fabrice.onepage.business.LanguageException
 import be.fabrice.onepage.controllers.dto.LanguageDto
 import be.fabrice.onepage.controllers.dto.LanguageValidator
 import be.fabrice.onepage.business.LanguageServiceComponent
+import be.fabrice.onepage.business.CodeRetour
 
 
 case class Retour(val status:String,val errors:Map[String,String])
@@ -32,14 +32,14 @@ class LanguageController(val languageServiceComponent:LanguageServiceComponent) 
 	}
 	
 	post("/"){
-	  val l = parsedBody.extract[LanguageDto]
+	  val l = parse(request.body).extract[LanguageDto]
+//	  val l = parsedBody.extract[LanguageDto]
 	  var errors = LanguageValidator.validate(l,Map())
 	  if(errors.isEmpty){
-	    try{
-		  languageService.add(l.transform)
-	    }catch{
-	      case e:LanguageException => errors = Map("language.key"->e.code.message)
-	    }
+	     languageService.add(l.transform) match {
+	       case CodeRetour("ok",_) =>
+	       case CodeRetour("ko",errs) =>errors = Map("language.key"->errs(0).message)
+	     }
 	  }
 	  
 	  if(errors.isEmpty){
