@@ -25,10 +25,17 @@ class LanguageControllerTestSuite  extends ScalatraSuite with FunSuite {
 
   addServlet(classOf[LanguageControllerTest],"/*")
   
-  test("simple"){
+  test("get(/list) must return json list of all languages"){
     get("/list"){
       status must equal (200)
       body must equal ("[{\"key\":\"test\",\"name\":\"test1\"},{\"key\":\"other\",\"name\":\"test2\"}]")
+    }
+  }
+  
+  test("get(/) must return base html page with angular.js"){
+    get("/"){
+      status must equal (200)
+      
     }
   }
 }

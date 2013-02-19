@@ -2,23 +2,10 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	<filter>
-		<filter-name>main</filter-name>
-		<filter-class>be.fabrice.onepage.controllers.MainController</filter-class>
-	</filter>
-	
-	<servlet>
-		<servlet-name>languages</servlet-name>
-		<servlet-class>be.fabrice.onepage.controllers.LanguageController</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>languages</servlet-name>
-		<url-pattern>/languages/*</url-pattern>
-	</servlet-mapping>
 
-	<filter-mapping>
-		<filter-name>main</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	
+	<listener>
+      <listener-class>org.scalatra.servlet.ScalatraListener</listener-class>
+    </listener>
+
 </web-app>
