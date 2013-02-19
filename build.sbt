@@ -6,6 +6,8 @@ scalaVersion := "2.9.2"
 
 seq(webSettings :_*)
 
+seq(ScctPlugin.instrumentSettings : _*)
+
 libraryDependencies += "org.scalatra" % "scalatra" % "2.2.0" exclude("com.typesafe.akka", "akka-actor")
 
 libraryDependencies += "org.scalatra" % "scalatra-scalate" % "2.2.0"
@@ -33,3 +35,5 @@ libraryDependencies += "org.scalatra" %% "scalatra-scalatest" % "2.2.0" % "test"
 libraryDependencies += "junit" % "junit" % "4.10" % "test"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.9.5" % "test"
+
+testOptions in Test += Tests.Argument("-oD")
