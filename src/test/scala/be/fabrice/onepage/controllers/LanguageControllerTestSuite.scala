@@ -17,13 +17,10 @@ trait TestLanguageServiceComponent extends LanguageServiceComponent with Languag
   when(languageService.findAll) thenReturn List(Language("test","test1"),Language("other","test2"))
 }
 
-class LanguageControllerTest extends LanguageController with TestLanguageServiceComponent{
-  
-}
-
 class LanguageControllerTestSuite  extends ScalatraSuite with FunSuite {
+  val languageServiceComponent = new TestLanguageServiceComponent(){}
 
-  addServlet(classOf[LanguageControllerTest],"/*")
+  addServlet(new LanguageController(languageServiceComponent),"/*")
   
   test("get(/list) must return json list of all languages"){
     get("/list"){
@@ -35,7 +32,7 @@ class LanguageControllerTestSuite  extends ScalatraSuite with FunSuite {
   test("get(/) must return base html page with angular.js"){
     get("/"){
       status must equal (200)
-      
+      body contains ("<script src=\"angular.min.js\">")
     }
   }
 }

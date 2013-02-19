@@ -7,18 +7,19 @@ import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.scalate.ScalateSupport
 import org.slf4j.LoggerFactory
-
 import be.fabrice.onepage.application.ComponentRegistry
 import be.fabrice.onepage.business.LanguageException
 import be.fabrice.onepage.controllers.dto.LanguageDto
 import be.fabrice.onepage.controllers.dto.LanguageValidator
+import be.fabrice.onepage.business.LanguageServiceComponent
 
 
 case class Retour(val status:String,val errors:Map[String,String])
 
-class LanguageController extends ScalatraServlet with ScalateSupport with JacksonJsonSupport with ComponentRegistry{
+class LanguageController(val languageServiceComponent:LanguageServiceComponent) extends ScalatraServlet with ScalateSupport with JacksonJsonSupport {
   protected implicit val jsonFormats: Formats = DefaultFormats
   
+  val languageService = languageServiceComponent.languageService
   val logger = LoggerFactory.getLogger(classOf[LanguageController])
   
   before() {
