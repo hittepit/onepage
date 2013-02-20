@@ -2,9 +2,27 @@
 	<head>
 		<title>Gestion des langues</title>
 		<script src="angular.min.js"></script>
+		<script src="angular-ui.min.js"></script>
+		<script src="jquery-1.9.1.js"></script>
+		<script src="jquery-ui-1.10.1.custom.min.js"></script>
 		<script>
-				
+		$(function() {
+			$("#language-form").dialog({
+				autoOpen:false,
+				modal:true,
+				close: function() {
+       				
+      			}
+			})
+			
+			$("#addLanguageButton").button().click(function(){
+				$("#language-form").dialog( "open" );
+			})	
+		})
+		</script>
+		<script>
 		function LanguageCtrl($scope,$http) {
+			angular.module('myModule', ['ui'])
 			$scope.codeError ='';
 			$http.get('/languages/list').success(function(data){
 				$scope.languages = data;
@@ -12,40 +30,60 @@
 			
 			$scope.add = function(language) {
 				var d = {
-					key: language.code,
+					key: language.key,
 					name: language.name
 				};
 				$http.post('/languages',d).success(function(data,status){
 					$scope.message = data.errors
 					if(data.status=="ok"){
 						$scope.codeError ='';
-						$scope.languages.push({"key":language.code, "name":language.name});
-						language.code='';
+						$scope.languages.push({"key":language.key, "name":language.name});
+						language.key='';
 						language.name='';
+						$("#language-form").dialog( "close" );
 					} else {
 						if(data.errors['language.key']){
-							$scope.codeError ='error';
+							$scope.codeError ='ui-state-error';
 						}
 						if(data.errors['language.name']){
-							$scope.nameError = 'error';
+							$scope.nameError = 'ui-state-error';
 						}
 					}
 				});
 			};
+			
+			$scope.edit = function(id) {
+				$http.get('/languages/'+id).success(function(data,status){
+					$scope.language=data;
+					$("#language-form").dialog('open');
+				});
+			}
+			
+			$scope.cancel = function(language){
+					$scope.codeError ='';
+					$scope.message=[];
+					language.key='';
+					language.name='';
+					$("#language-form").dialog( "close" );
+			}
 		};
 		</script>
 		<link rel="stylesheet" href="people.css">
+		<link rel="stylesheet" href="jquery-ui-1.10.1.custom.css">
+		<link rel="stylesheet" href="angular-ui.css">
 	</head>
 	<body ng-controller="LanguageCtrl">
 		<h1>Liste des langues disponibles</h1>
 		<table class="people">
-			<tr><th>Code</th><th>Langue</th></tr>
+			<tr><th>Code</th><th>Langue</th><th>&nbsp;</th></tr>
 			<tr ng-repeat="language in languages" ng-class="{0:'even',1:'odd'}[$index % 2]">
 				<td>{{language.key}}</td>
 				<td>{{language.name}}</td>
+				<td><a ng-click="edit(language.key)">Editer</a></td>
 			</tr>
 		</table>
-		
+		<button id="addLanguageButton">Ajouter une langue</button>
+		<div id="language-form" style="diplay:none">
 		<form name="la" novalidate>
 			<h2>Ajouter une langue</h2>
 			<span id="message">
@@ -53,9 +91,11 @@
 				<li>{{m}}</li>
 			</ul>
 			</span><br />
-			Code: <input type="text" ng-model="language.code" class="{{codeError}}" required/><br/>
+			Code: <input type="text" ng-model="language.key" class="{{codeError}}" required/><br/>
 			Langue: <input type="text" ng-model="language.name" class="{{nameError}}" required/><br />
 			<button ng-click="add(language)" ng-disabled="la.$invalid">Ajouter</button>
+			<button ng-click="cancel(language)">Annuler</button>
 		</form>
+		</div>
 	</body>
 <html>

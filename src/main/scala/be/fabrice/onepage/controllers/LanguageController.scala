@@ -31,6 +31,14 @@ class LanguageController(val languageServiceComponent:LanguageServiceComponent) 
 		ssp("/languages")  
 	}
 	
+	get("/:code"){
+		val code = params("code")
+		languageService.find(code) match {
+		  case Some(l) => l
+		  case None => null
+		}
+	}
+	
 	post("/"){
 	  val l = parse(request.body).extract[LanguageDto]
 //	  val l = parsedBody.extract[LanguageDto]

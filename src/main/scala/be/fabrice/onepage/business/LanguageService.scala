@@ -24,6 +24,8 @@ trait LanguageServiceComponent {
   class LanguageService{
     def findAll = languageDao.findAll
     
+    def find(code:String) = languageDao.find(code)
+    
    	def add(l:Language)= {
    	  languageDao.find(l.key) match {
    	    case None => languageDao.save(l)
