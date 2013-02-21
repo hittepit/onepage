@@ -6,24 +6,22 @@
 		<script src="jquery-1.9.1.js"></script>
 		<script src="jquery-ui-1.10.1.custom.min.js"></script>
 		<script>
+		var editLanguage = true;
+		
 		$(function() {
 			$("#language-form").dialog({
+				dialogClass: "no-close",
 				autoOpen:false,
 				modal:true,
-				close: function() {
-       				
-      			}
+				title:"Langue"
 			})
-			
-			$("#addLanguageButton").button().click(function(){
-				$("#language-form").dialog( "open" );
-			})	
 		})
-		</script>
-		<script>
+
 		function LanguageCtrl($scope,$http) {
 			angular.module('myModule', ['ui'])
+			$scope.editLanguage = true;
 			$scope.codeError ='';
+			$scope.language={'key':'','name':''};
 			$http.get('/languages/list').success(function(data){
 				$scope.languages = data;
 			});
@@ -38,7 +36,7 @@
 					if(data.status=="ok"){
 						$scope.codeError ='';
 						$scope.languages.push({"key":language.key, "name":language.name});
-						language.key='';
+						if(language.key) language.key='';
 						language.name='';
 						$("#language-form").dialog( "close" );
 					} else {
@@ -52,6 +50,10 @@
 				});
 			};
 			
+			$scope.openDlg = function(){
+				$("#language-form").dialog('open');
+			}
+			
 			$scope.edit = function(id) {
 				$http.get('/languages/'+id).success(function(data,status){
 					$scope.language=data;
@@ -59,11 +61,11 @@
 				});
 			}
 			
-			$scope.cancel = function(language){
+			$scope.cancel = function(){
 					$scope.codeError ='';
 					$scope.message=[];
-					language.key='';
-					language.name='';
+					$scope.language.key='';
+					$scope.language.name='';
 					$("#language-form").dialog( "close" );
 			}
 		};
@@ -82,10 +84,9 @@
 				<td><a ng-click="edit(language.key)">Editer</a></td>
 			</tr>
 		</table>
-		<button id="addLanguageButton">Ajouter une langue</button>
+		<button id="addLanguageButton" ng-click="openDlg()">Ajouter une langue</button>
 		<div id="language-form" style="diplay:none">
-		<form name="la" novalidate>
-			<h2>Ajouter une langue</h2>
+		<form id="addform" name="la" novalidate>
 			<span id="message">
 			<ul ng-repeat="m in message">
 				<li>{{m}}</li>
@@ -93,8 +94,8 @@
 			</span><br />
 			Code: <input type="text" ng-model="language.key" class="{{codeError}}" required/><br/>
 			Langue: <input type="text" ng-model="language.name" class="{{nameError}}" required/><br />
-			<button ng-click="add(language)" ng-disabled="la.$invalid">Ajouter</button>
-			<button ng-click="cancel(language)">Annuler</button>
+			<button ng-click="add(language)" ng-disabled="la.$invalid">Sauver</button>
+			<button ng-click="cancel()">Annuler</button>
 		</form>
 		</div>
 	</body>

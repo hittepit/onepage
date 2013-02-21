@@ -22,3 +22,8 @@ table.people tr.odd{
 .error {
 	border-color:red;
 }
+
+/*Utilisé pour masquer le bouton close dans le dialogue jquery*/
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
