@@ -34,5 +34,9 @@ trait LanguageServiceComponent {
    	  }
 	}
 
+    def save(l:Language) = {
+      languageDao.save(l)
+      CodeRetour.OK
+    }
   }
 }

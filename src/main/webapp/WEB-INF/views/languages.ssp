@@ -31,11 +31,19 @@
 					key: language.key,
 					name: language.name
 				};
-				$http.post('/languages',d).success(function(data,status){
+				var m = 'POST';
+				if($scope.editLanguage) m = 'PUT';
+				$http({method:m,url:'/languages',data:d}).success(function(data,status){
 					$scope.message = data.errors
 					if(data.status=="ok"){
 						$scope.codeError ='';
-						$scope.languages.push({"key":language.key, "name":language.name});
+						if($scope.editLanguage){
+							$http.get('/languages/list').success(function(data){
+								$scope.languages = data;
+							});
+						} else {
+							$scope.languages.push({"key":language.key, "name":language.name});
+						}
 						if(language.key) language.key='';
 						language.name='';
 						$("#language-form").dialog( "close" );
@@ -51,11 +59,15 @@
 			};
 			
 			$scope.openDlg = function(){
+				$scope.editLanguage = false;
+				$("#codeId").removeAttr('disabled');
 				$("#language-form").dialog('open');
 			}
 			
 			$scope.edit = function(id) {
 				$http.get('/languages/'+id).success(function(data,status){
+					$scope.editLanguage = true;
+					$("#codeId").attr('disabled', 'disabled');
 					$scope.language=data;
 					$("#language-form").dialog('open');
 				});
@@ -92,7 +104,7 @@
 				<li>{{m}}</li>
 			</ul>
 			</span><br />
-			Code: <input type="text" ng-model="language.key" class="{{codeError}}" required/><br/>
+			Code: <input type="text" id="codeId" ng-model="language.key" class="{{codeError}} {{{true:'no-edit',false:''}[editLanguage]}}"  required/><br/>
 			Langue: <input type="text" ng-model="language.name" class="{{nameError}}" required/><br />
 			<button ng-click="add(language)" ng-disabled="la.$invalid">Sauver</button>
 			<button ng-click="cancel()">Annuler</button>

@@ -41,10 +41,27 @@ class LanguageController(val languageServiceComponent:LanguageServiceComponent) 
 	
 	post("/"){
 	  val l = parse(request.body).extract[LanguageDto]
-//	  val l = parsedBody.extract[LanguageDto]
 	  var errors = LanguageValidator.validate(l,Map())
 	  if(errors.isEmpty){
 	     languageService.add(l.transform) match {
+	       case CodeRetour("ok",_) =>
+	       case CodeRetour("ko",errs) =>errors = Map("language.key"->errs(0).message)
+	     }
+	  }
+	  
+	  if(errors.isEmpty){
+	    Retour("ok",Map())
+	  } else {
+	      logger.error("Il y a des erreurs")
+	      Retour("ko",errors)
+	  }
+	}
+	
+	put("/"){
+	  val l = parse(request.body).extract[LanguageDto]
+	  var errors = LanguageValidator.validate(l,Map())
+	  if(errors.isEmpty){
+	     languageService.save(l.transform) match {
 	       case CodeRetour("ok",_) =>
 	       case CodeRetour("ko",errs) =>errors = Map("language.key"->errs(0).message)
 	     }

@@ -26,4 +26,6 @@ table.people tr.odd{
 /*Utilisé pour masquer le bouton close dans le dialogue jquery*/
 .no-close .ui-dialog-titlebar-close {
   display: none;
+}{
+  display: none;
 }
