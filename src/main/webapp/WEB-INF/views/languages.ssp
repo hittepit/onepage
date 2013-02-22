@@ -88,7 +88,7 @@
 		<h1>Liste des langues disponibles</h1>
 		<table class="people">
 			<tr><th>Code</th><th>Langue</th><th>&nbsp;</th></tr>
-			<tr ng-repeat="language in languages" ng-class="{0:'even',1:'odd'}[$index % 2]">
+			<tr ng-repeat="language in languages" ng-class-odd="'odd'" ng-class-even="'even'">
 				<td>{{language.key}}</td>
 				<td>{{language.name}}</td>
 				<td><a ng-click="edit(language.key)">Editer</a></td>
