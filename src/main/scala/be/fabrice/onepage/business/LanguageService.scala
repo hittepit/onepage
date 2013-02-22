@@ -7,6 +7,7 @@ case class LangueErrorCode(message:String)
 
 object LangueErrorCode {
   val KEY_EXISTS = LangueErrorCode("Le code existe déjà")
+  val KEY_MUST_EXIST = LangueErrorCode("Le code à mettre à jour doit exister")
 }
 
 case class CodeRetour(val code:String, val errors:List[LangueErrorCode])
@@ -35,8 +36,12 @@ trait LanguageServiceComponent {
 	}
 
     def save(l:Language) = {
-      languageDao.save(l)
-      CodeRetour.OK
+   	  languageDao.find(l.key) match {
+   	    case None => CodeRetour.KO(List(LangueErrorCode.KEY_MUST_EXIST))
+   	  
+   	    case Some(_) => languageDao.save(l)
+   	    				CodeRetour.OK
+   	  }
     }
   }
 }

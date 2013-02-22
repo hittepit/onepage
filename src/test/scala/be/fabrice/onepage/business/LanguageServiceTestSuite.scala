@@ -34,9 +34,28 @@ class LanguageServiceTestSuite extends FunSuite with BeforeAndAfter with MustMat
 	  verify(languageDao).save(l)
 	}
 	
-	test("add should throw an exception if code already exists in DB"){
+	test("add must return ko if code already exists in DB"){
 	  val s=  languageService.add(Language("existing","whatever"))
 	  
 	  s.code must equal ("ko")
+	}
+	
+	test("save of an existing language must call save on dao and return OK"){
+	  val l = Language("existing","whatever")
+	  val s = languageService.save(l)
+	  verify(languageDao).save(l)
+	  
+	  s.code must equal ("ok")
+	}
+	
+	test("save of non existing language must return ko"){
+	  val s = languageService.save(Language("new","a new hope"))
+	  
+	  s.code must equal ("ko")
+	}
+	
+	test("save of non existing language must not call the dao"){
+	  val s = languageService.save(Language("new","a new hope"))
+	  verify(languageDao, times(0)).save(any())
 	}
 }
