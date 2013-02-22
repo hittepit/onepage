@@ -6,8 +6,6 @@
 		<script src="jquery-1.9.1.js"></script>
 		<script src="jquery-ui-1.10.1.custom.min.js"></script>
 		<script>
-		var editLanguage = true;
-		
 		$(function() {
 			$("#language-form").dialog({
 				dialogClass: "no-close",
@@ -104,7 +102,7 @@
 				<li>{{m}}</li>
 			</ul>
 			</span><br />
-			Code: <input type="text" id="codeId" ng-model="language.key" class="{{codeError}} {{{true:'no-edit',false:''}[editLanguage]}}"  required/><br/>
+			Code: <input type="text" id="codeId" ng-model="language.key" class="{{codeError}}"  required/><br/>
 			Langue: <input type="text" ng-model="language.name" class="{{nameError}}" required/><br />
 			<button ng-click="add(language)" ng-disabled="la.$invalid">Sauver</button>
 			<button ng-click="cancel()">Annuler</button>
